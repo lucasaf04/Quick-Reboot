@@ -1,9 +1,15 @@
 {
-    "name": "Switch development environment",
-    "image": "devkitpro/devkita64",
-    "customizations": {
-      "vscode": {
-        "extensions": ["ms-vscode.cpptools"]
-      }
+  "name": "Switch development environment",
+  "build": { "dockerfile": "Dockerfile" },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        // "ms-vscode.makefile-tools",
+        "zixuanwang.linkerscript",
+        // "dan-c-underwood.arm"
+        "MKornelsen.vscode-arm64"
+      ]
     }
   }
+}

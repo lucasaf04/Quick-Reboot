@@ -1,13 +1,9 @@
-MAKEFILES := $(subst ./,,$(shell find . -mindepth 2 -name Makefile))
+.PHONY:	all
 
-TARGETS	:= $(dir $(MAKEFILES))
-
-all: $(TARGETS)
-
-.PHONY: $(TARGETS)
-
-$(TARGETS):
-	@$(MAKE) -C $@
+all:
+	@$(MAKE) -C quick-reboot-app
+	@$(MAKE) -C quick-reboot-overlay
 
 clean:
-	@for i in $(TARGETS); do $(MAKE) -C $$i clean || exit 1; done;
+	@$(MAKE) -C quick-reboot-app clean
+	@$(MAKE) -C quick-reboot-overlay clean
