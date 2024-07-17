@@ -1,25 +1,28 @@
-#define TESLA_INIT_IMPL // If you have more than one file using the tesla
-                        // header, only define this in the main one
-#include <tesla.hpp>    // The Tesla Header
+#define TESLA_INIT_IMPL
+#include <tesla.hpp>
+
+static constexpr auto APP_TITLE = "Quick Reboot";
+static constexpr auto APP_VERSION = "v2.2.0";
 
 class QuickRebootGui : public tsl::Gui {
 public:
   QuickRebootGui() {}
 
-  // Called when this Gui gets loaded to create the UI
-  // Allocate all elements on the heap. libtesla will make sure to clean them up when not needed
-  // anymore
   virtual tsl::elm::Element *createUI() override {
-    // A OverlayFrame is the base element every overlay consists of. This will draw the default
-    // Title and Subtitle. If you need more information in the header or want to change it's look,
-    // use a HeaderOverlayFrame.
-    auto frame = new tsl::elm::OverlayFrame("Quick Reboot", "v2.1.0");
+    auto frame = new tsl::elm::OverlayFrame(APP_TITLE, APP_VERSION);
 
-    // A list that can contain sub elements and handles scrolling
     auto list = new tsl::elm::List();
 
-    // Create and add a new list item to the list
-    auto *rebootListItem = new tsl::elm::ListItem("Reboot");
+    auto poweroffListItem = new tsl::elm::ListItem("Power Off");
+    poweroffListItem->setClickListener([](u64 keys) {
+      if (keys & HidNpadButton_A) {
+        spsmShutdown(false);
+      }
+      return false;
+    });
+    list->addItem(poweroffListItem);
+
+    auto rebootListItem = new tsl::elm::ListItem("Reboot");
     rebootListItem->setClickListener([](u64 keys) {
       if (keys & HidNpadButton_A) {
         spsmShutdown(true);
@@ -28,44 +31,58 @@ public:
     });
     list->addItem(rebootListItem);
 
-    // Add the list to the frame for it to be drawn
     frame->setContent(list);
 
-    // Return the frame to have it become the top level element of this Gui
     return frame;
   }
 
-  // Called once every frame to update values
   virtual void update() override {}
 
-  // Called once every frame to handle inputs not handled by other UI elements
   virtual bool handleInput(u64 keysDown, u64 keysHeld, const HidTouchState &touchPos,
                            HidAnalogStickState joyStickPosLeft,
                            HidAnalogStickState joyStickPosRight) override {
-    return false; // Return true here to signal the inputs have been consumed
+    return false;
+  }
+};
+
+class QuickRebootErrorGui : public QuickRebootGui {
+private:
+  const char *const errorMessage;
+
+public:
+  QuickRebootErrorGui(const char *const errorMessage) : errorMessage(errorMessage) {}
+
+  virtual tsl::elm::Element *createUI() override {
+    auto frame = new tsl::elm::OverlayFrame(APP_TITLE, APP_VERSION);
+    frame->setContent(
+        new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *r, s32 x, s32 y, s32 w, s32 h) {
+          r->drawString(errorMessage, false, x + 3, y + 15, 20, r->a(0xF22F));
+        }));
+    return frame;
   }
 };
 
 class QuickRebootOverlay : public tsl::Overlay {
+private:
+  Result spsmInitializeResult;
+
 public:
-  // libtesla already initialized fs, hid, pl, pmdmnt, hid:sys and set:sys
-  virtual void initServices() override {
-    spsmInitialize();
-  } // Called at the start to initialize all services necessary for this Overlay
+  virtual void initServices() override { spsmInitializeResult = spsmInitialize(); }
 
-  virtual void exitServices() override {
-    spsmExit();
-  } // Callet at the end to clean up all services previously initialized
+  virtual void exitServices() override { spsmExit(); }
 
-  virtual void onShow() override {
-  } // Called before overlay wants to change from invisible to visible state
+  virtual void onShow() override {}
 
-  virtual void onHide() override {
-  } // Called before overlay wants to change from visible to invisible state
+  virtual void onHide() override {}
 
   virtual std::unique_ptr<tsl::Gui> loadInitialGui() override {
-    return initially<QuickRebootGui>(); // Initial Gui to load. It's possible to pass arguments to
-                                        // it's constructor like this
+    if (R_FAILED(spsmInitializeResult)) {
+      char msg[64];
+      sprintf(msg, "Failed to init spsm service.\nError code: %u.", spsmInitializeResult);
+      return initially<QuickRebootErrorGui>(msg);
+    }
+
+    return initially<QuickRebootGui>();
   }
 };
 
