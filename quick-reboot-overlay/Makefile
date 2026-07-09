@@ -38,7 +38,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #   NACP building is skipped as well.
 #---------------------------------------------------------------------------------
 APP_TITLE		:=	Quick Reboot
-APP_VERSION 	:= 	2.1.0
+APP_VERSION 	:= 	2.2.1
 
 TARGET		:=	Quick-Reboot
 BUILD		:=	build
@@ -56,7 +56,7 @@ ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ '-DAPP_TITLE="$(APP_TITLE)"' '-DAPP_VERSION="v$(APP_VERSION)"'
 
 CXXFLAGS	:= $(CFLAGS) -fno-exceptions -std=c++20
 

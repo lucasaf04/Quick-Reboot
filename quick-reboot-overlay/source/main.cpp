@@ -1,9 +1,6 @@
 #define TESLA_INIT_IMPL
 #include <tesla.hpp>
 
-static constexpr auto APP_TITLE = "Quick Reboot";
-static constexpr auto APP_VERSION = "v2.2.0";
-
 class QuickRebootGui : public tsl::Gui {
 public:
   QuickRebootGui() {}
