@@ -1,0 +1,59 @@
+[
+  {
+    "arguments": [
+      "/opt/devkitpro/devkitA64/bin/aarch64-none-elf-g++",
+      "-g",
+      "-Wall",
+      "-O2",
+      "-ffunction-sections",
+      "-march=armv8-a+crc+crypto",
+      "-mtune=cortex-a57",
+      "-mtp=soft",
+      "-fPIE",
+      "-I/workspaces/Quick-Reboot/quick-reboot-app/include",
+      "-I/opt/devkitpro/portlibs/switch/include",
+      "-I/opt/devkitpro/libnx/include",
+      "-I/workspaces/Quick-Reboot/quick-reboot-app/build",
+      "-D__SWITCH__",
+      "-fno-rtti",
+      "-fno-exceptions",
+      "-c",
+      "-o",
+      "main.o",
+      "/workspaces/Quick-Reboot/quick-reboot-app/source/main.cpp"
+    ],
+    "directory": "/workspaces/Quick-Reboot/quick-reboot-app/build",
+    "file": "/workspaces/Quick-Reboot/quick-reboot-app/source/main.cpp",
+    "output": "/workspaces/Quick-Reboot/quick-reboot-app/build/main.o"
+  },
+  {
+    "arguments": [
+      "/opt/devkitpro/devkitA64/bin/aarch64-none-elf-g++",
+      "-g",
+      "-Wall",
+      "-O2",
+      "-ffunction-sections",
+      "-march=armv8-a+crc+crypto",
+      "-mtune=cortex-a57",
+      "-mtp=soft",
+      "-fPIE",
+      "-I/workspaces/Quick-Reboot/quick-reboot-overlay/include",
+      "-I/workspaces/Quick-Reboot/quick-reboot-overlay/libs/libtesla/include",
+      "-I/opt/devkitpro/portlibs/switch/include",
+      "-I/opt/devkitpro/libnx/include",
+      "-I/workspaces/Quick-Reboot/quick-reboot-overlay/build",
+      "-D__SWITCH__",
+      "-DAPP_TITLE=\"Quick Reboot\"",
+      "-DAPP_VERSION=\"v2.2.1\"",
+      "-fno-exceptions",
+      "-std=c++20",
+      "-c",
+      "-o",
+      "main.o",
+      "/workspaces/Quick-Reboot/quick-reboot-overlay/source/main.cpp"
+    ],
+    "directory": "/workspaces/Quick-Reboot/quick-reboot-overlay/build",
+    "file": "/workspaces/Quick-Reboot/quick-reboot-overlay/source/main.cpp",
+    "output": "/workspaces/Quick-Reboot/quick-reboot-overlay/build/main.o"
+  }
+]
